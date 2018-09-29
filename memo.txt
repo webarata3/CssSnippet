@@ -2,6 +2,6 @@
 
 npm -g install electron
 
-mkdir public
-cd public
+mkdir app
+cd app
 npm init -y
