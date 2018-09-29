@@ -1,0 +1,7 @@
+プロジェクトの準備
+
+npm -g install electron
+
+mkdir public
+cd public
+npm init -y
