@@ -10,7 +10,8 @@
 }
 
 :disabled {
-  background-color: #0f0 !important;
+  background-color: #ccc !important;
+  color: #eee;
 }
 
 html {
@@ -19,6 +20,9 @@ html {
 
 body {
   background-color: #fff;
+}
+
+#app {
   display: flex;
   height: 100%;
 }
@@ -52,7 +56,7 @@ body {
 }
 
 .list ul:empty::after {
-  content: '新規作成から作成してください。';
+  content: '新規作成ボタンを押して、スニペットを作成してください。';
 }
 
 .list li {
@@ -85,6 +89,10 @@ main {
 
 #html_src > div {
   flex: 1;
+}
+
+input {
+  font-size: var(--input-text-size);
 }
 
 textarea {

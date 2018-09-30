@@ -3,32 +3,42 @@
  <head>
   <meta charset="utf-8">
   <title>CSSスニペット</title>
-  <link rel="stylesheet" href="./main.css">
+  <link rel="stylesheet" href="css/main.css">
  </head>
  <body>
-  <div class="side">
-   <input type="button" id="newButton" value="新規作成">
-   <div class="list">
-    <ul></ul>
+  <div id="app">
+   <div class="side">
+    <input type="button" id="newButton" @click="newSnippet" value="新規作成">
+    <div id="list" class="list">
+     <ul>
+      <snippet-item
+       v-for="snippet in snippetList"
+       v-bind:snippet="snippet"
+       v-bind:key="snippet.id"
+       v-on:select-snippet="onSelectSnippet"></snippet-item>
+     </ul>
+    </div>
    </div>
+   <main>
+    <div>
+     <input type="text" size="50" placeholder="スニペットの名前"
+            v-model="name" @input="inputForm" v-bind:disabled="formDisabled">
+     <input type="button" id="deleteButton" value="このスニペットを削除" @click="onClickDeleteButton" v-bind:disabled="formDisabled">
+    </div>
+    <div id="html_src">
+     <div>
+      <div>HTML</div>
+      <textarea v-model="html" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
+     </div>
+     <div>
+      <div>CSS</div>
+      <textarea v-model="css" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
+     </div>
+    </div>
+    <webview v-bind:src="htmlSource"></webview>
+   </main>
   </div>
-  <main>
-   <div>
-    <input type="text" size="50" id="snippetName" placeholder="スニペットの名前">
-    <input type="button" id="deleteButton" value="このスニペットを削除">
-   </div>
-   <div id="html_src">
-    <div>
-     <div>HTML</div>
-     <textarea id="html"></textarea>
-    </div>
-    <div>
-     <div>CSS</div>
-     <textarea id="css"></textarea>
-    </div>
-   </div>
-   <webview id="wv"></webview>
-  </main>
-  <script src="./index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="js/app.js"></script>
  </body>
 </html>
