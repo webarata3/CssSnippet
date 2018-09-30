@@ -1,5 +1,7 @@
 'use strict';
 
+const NEW_SNIPPET = '新規スニペット';
+
 Vue.component('snippet-item', {
   template: `<li v-bind:id="snippet.id"
                  v-bind:class="{ selected: snippet.selected }"
@@ -50,7 +52,7 @@ var app = new Vue({
 
       this.clearSelected();
 
-      this.name = '新規スニペット';
+      this.name = NEW_SNIPPET;
       this.html = '';
       this.css = '';
 
@@ -73,13 +75,13 @@ var app = new Vue({
     },
     onFocusName: function (event) {
       const text = event.currentTarget.value;
-      if (text === '新規スニペット') {
-        event.currentTarget.select(0, '新規スニペット'.length);
+      if (text === NEW_SNIPPET) {
+        event.currentTarget.select(0, NEW_SNIPPET.length);
       }
     },
     saveSnippet: function () {
       const saveData = {
-        name: this.name ? this.name : '新規スニペット',
+        name: this.name ? this.name : NEW_SNIPPET,
         html: this.html,
         css: this.css
       };
