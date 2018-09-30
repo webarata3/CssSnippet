@@ -191,15 +191,8 @@ var app = new Vue({
         if (value.id === this.currentId) {
           this.snippetList.splice(index, 1);
           deleteOne(this.db, 'snippet', this.currentId);
-          // localStorage.removeItem(value.id);
         }
       });
-      // this.idList.forEach((value, index) => {
-      //   if (value === this.currentId) {
-      //     this.idList.splice(index, 1);
-      //     localStorage.setItem('idList', JSON.stringify(this.idList));
-      //   }
-      // });
       this.name = '';
       this.html = '';
       this.css = '';
