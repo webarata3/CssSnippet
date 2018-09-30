@@ -47,7 +47,6 @@ function readAll(db, storeName) {
       result.continue();
     };
     cursorRequest.onerror = error => {
-      console.log(error);
       resolve(resultArray);
     };
   });
@@ -116,6 +115,7 @@ var app = new Vue({
 
     const list = await readAll(this.db, 'snippet');
     list.forEach(value => {
+      value.selected = false;
       this.snippetList.push(value);
     });
   },
