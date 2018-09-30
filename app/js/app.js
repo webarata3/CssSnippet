@@ -1,5 +1,86 @@
 'use strict';
 
+function init() {
+  return new Promise(function (resolve, reject) {
+    const request = window.indexedDB.open('snippet', 1);
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      db.createObjectStore('next_id', {keyPath: 'id'});
+      db.createObjectStore('snippet', {keyPath: 'id'});
+    };
+    request.onsuccess = event => {
+      resolve(event.target.result);
+    };
+  });
+}
+
+function readOne(db, storeName, id) {
+  const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
+
+  return new Promise(function (resolve, reject) {
+    const request = objectStore.get(id);
+
+    request.onsuccess = (event) => {
+      resolve(event.target.result);
+    };
+    request.onerror = (event) => {
+      resolve(null);
+    }
+  });
+}
+
+function readAll(db, storeName) {
+  const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
+
+  const resultArray = [];
+
+  return new Promise(function (resolve, reject) {
+    const range = IDBKeyRange.lowerBound(0);
+    const cursorRequest = objectStore.openCursor(range);
+    cursorRequest.onsuccess = function (event) {
+      const result = event.target.result;
+      if (!result) {
+        resolve(resultArray);
+        return;
+      }
+      resultArray.push(result.value);
+      result.continue();
+    };
+    cursorRequest.onerror = error => {
+      console.log(error);
+      resolve(resultArray);
+    };
+  });
+}
+
+function put(db, storeName, data) {
+  const tx = db.transaction(storeName, 'readwrite');
+  const objectStore = tx.objectStore(storeName);
+
+  return new Promise(function (resolve, reject) {
+    const request = objectStore.put(data);
+
+    request.onsuccess = function () {
+    };
+
+    tx.oncomplete = function () {
+      resolve();
+    };
+  });
+}
+
+function deleteOne(db, storeName, key) {
+  const objectStore = db.transaction(storeName, "readwrite").objectStore(storeName);
+
+  return new Promise(function (resolve, reject) {
+    const request = objectStore.delete(key);
+
+    request.onsuccess = function(event) {
+      resolve();
+    };
+  });
+}
+
 const NEW_SNIPPET = '新規スニペット';
 
 Vue.component('snippet-item', {
@@ -19,8 +100,8 @@ Vue.component('snippet-item', {
 var app = new Vue({
   el: '#app',
   data: {
+    db: {},
     currentId: 0,
-    idList: [],
     formDisabled: true,
     name: '',
     html: '',
@@ -30,25 +111,20 @@ var app = new Vue({
     snippetList: [],
     currentIndex: 0
   },
-  created: function () {
-    const tempIdList = localStorage.getItem('idList');
-    this.idList = tempIdList ? JSON.parse(tempIdList) : [];
+  created: async function () {
+    this.db = await init();
 
-    this.idList.forEach(value => {
-      const snippet = JSON.parse(localStorage.getItem(value));
-      this.snippetList.push({
-        id: value,
-        name: snippet.name,
-        selected: false
-      });
+    const list = await readAll(this.db, 'snippet');
+    list.forEach(value => {
+      this.snippetList.push(value);
     });
   },
   methods: {
-    newSnippet: function () {
+    newSnippet: async function () {
       this.formDisabled = false;
 
-      this.currentId = parseInt(localStorage.getItem('nextId'), 10) || 0;
-      this.idList.push(this.currentId);
+      const nextId = await readOne(this.db, 'next_id', 0);
+      this.currentId = nextId ? nextId.next_id : 0;
 
       this.clearSelected();
 
@@ -65,8 +141,7 @@ var app = new Vue({
 
       this.inputForm();
 
-      localStorage.setItem('nextId', this.currentId + 1);
-      localStorage.setItem('idList', JSON.stringify(this.idList));
+      put(this.db, 'next_id', {id: 0, next_id: this.currentId + 1});
     },
     inputForm: function () {
       this.snippetList[this.currentIndex].name = this.name;
@@ -81,18 +156,19 @@ var app = new Vue({
     },
     saveSnippet: function () {
       const saveData = {
+        id: this.currentId,
         name: this.name ? this.name : NEW_SNIPPET,
         html: this.html,
         css: this.css
       };
-      localStorage.setItem(this.currentId, JSON.stringify(saveData));
+      put(this.db, 'snippet', saveData);
     },
     clearSelected: function () {
       this.snippetList.forEach(value => {
         value.selected = false;
       });
     },
-    onSelectSnippet: function (id) {
+    onSelectSnippet: async function (id) {
       this.clearSelected();
       this.snippetList.forEach((value, index) => {
         if (value.id === id) {
@@ -101,7 +177,7 @@ var app = new Vue({
       });
       this.snippetList[this.currentIndex].selected = true;
 
-      const snippet = JSON.parse(localStorage.getItem(id));
+      const snippet = await readOne(this.db, 'snippet', id);
       this.formDisabled = false;
       this.currentId = id;
       this.name = snippet.name;
@@ -114,15 +190,16 @@ var app = new Vue({
       this.snippetList.forEach((value, index) => {
         if (value.id === this.currentId) {
           this.snippetList.splice(index, 1);
-          localStorage.removeItem(value.id);
+          deleteOne(this.db, 'snippet', this.currentId);
+          // localStorage.removeItem(value.id);
         }
       });
-      this.idList.forEach((value, index) => {
-        if (value === this.currentId) {
-          this.idList.splice(index, 1);
-          localStorage.setItem('idList', JSON.stringify(this.idList));
-        }
-      });
+      // this.idList.forEach((value, index) => {
+      //   if (value === this.currentId) {
+      //     this.idList.splice(index, 1);
+      //     localStorage.setItem('idList', JSON.stringify(this.idList));
+      //   }
+      // });
       this.name = '';
       this.html = '';
       this.css = '';
