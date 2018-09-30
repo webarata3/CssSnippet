@@ -1,83 +1,85 @@
 'use strict';
 
-function init() {
-  return new Promise(function (resolve, reject) {
-    const request = window.indexedDB.open('snippet', 1);
-    request.onupgradeneeded = event => {
-      const db = event.target.result;
-      db.createObjectStore('next_id', {keyPath: 'id'});
-      db.createObjectStore('snippet', {keyPath: 'id'});
-    };
-    request.onsuccess = event => {
-      resolve(event.target.result);
-    };
-  });
-}
+class DbUtil {
+  static init(callback) {
+    return new Promise(function (resolve, reject) {
+      const request = window.indexedDB.open('snippet', 1);
+      request.onupgradeneeded = event => {
+        const db = event.target.result;
+        callback(db);
+      };
+      request.onsuccess = event => {
+        resolve(event.target.result);
+      };
+    });
+  }
 
-function readOne(db, storeName, id) {
-  const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
+  static readOne(db, storeName, id) {
+    const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
 
-  return new Promise(function (resolve, reject) {
-    const request = objectStore.get(id);
+    return new Promise(function (resolve, reject) {
+      const request = objectStore.get(id);
 
-    request.onsuccess = (event) => {
-      resolve(event.target.result);
-    };
-    request.onerror = (event) => {
-      resolve(null);
-    }
-  });
-}
-
-function readAll(db, storeName) {
-  const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
-
-  const resultArray = [];
-
-  return new Promise(function (resolve, reject) {
-    const range = IDBKeyRange.lowerBound(0);
-    const cursorRequest = objectStore.openCursor(range);
-    cursorRequest.onsuccess = function (event) {
-      const result = event.target.result;
-      if (!result) {
-        resolve(resultArray);
-        return;
+      request.onsuccess = (event) => {
+        resolve(event.target.result);
+      };
+      request.onerror = (event) => {
+        resolve(null);
       }
-      resultArray.push(result.value);
-      result.continue();
-    };
-    cursorRequest.onerror = error => {
-      resolve(resultArray);
-    };
-  });
-}
+    });
+  }
 
-function put(db, storeName, data) {
-  const tx = db.transaction(storeName, 'readwrite');
-  const objectStore = tx.objectStore(storeName);
+  static readAll(db, storeName) {
+    const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
 
-  return new Promise(function (resolve, reject) {
-    const request = objectStore.put(data);
+    const resultArray = [];
 
-    request.onsuccess = function () {
-    };
+    return new Promise(function (resolve, reject) {
+      const range = IDBKeyRange.lowerBound(0);
+      const cursorRequest = objectStore.openCursor(range);
+      cursorRequest.onsuccess = function (event) {
+        const result = event.target.result;
+        if (!result) {
+          resolve(resultArray);
+          return;
+        }
+        resultArray.push(result.value);
+        result.continue();
+      };
+      cursorRequest.onerror = error => {
+        resolve(resultArray);
+      };
+    });
+  }
 
-    tx.oncomplete = function () {
-      resolve();
-    };
-  });
-}
+  static put(db, storeName, data) {
+    const tx = db.transaction(storeName, 'readwrite');
+    const objectStore = tx.objectStore(storeName);
 
-function deleteOne(db, storeName, key) {
-  const objectStore = db.transaction(storeName, "readwrite").objectStore(storeName);
+    return new Promise(function (resolve, reject) {
+      const request = objectStore.put(data);
 
-  return new Promise(function (resolve, reject) {
-    const request = objectStore.delete(key);
+      request.onsuccess = function () {
+      };
 
-    request.onsuccess = function(event) {
-      resolve();
-    };
-  });
+      tx.oncomplete = function () {
+        resolve();
+      };
+    });
+  }
+
+  static deleteOne(db, storeName, key) {
+    const objectStore = db.transaction(storeName, "readwrite").objectStore(storeName);
+
+    return new Promise(function (resolve, reject) {
+      const request = objectStore.delete(key);
+
+      request.onsuccess = function (event) {
+        resolve();
+      };
+    });
+  }
+
 }
 
 const NEW_SNIPPET = '新規スニペット';
@@ -111,9 +113,12 @@ var app = new Vue({
     currentIndex: 0
   },
   created: async function () {
-    this.db = await init();
+    this.db = await DbUtil.init((db) => {
+      db.createObjectStore('next_id', {keyPath: 'id'});
+      db.createObjectStore('snippet', {keyPath: 'id'});
+    });
 
-    const list = await readAll(this.db, 'snippet');
+    const list = await DbUtil.readAll(this.db, 'snippet');
     list.forEach(value => {
       value.selected = false;
       this.snippetList.push(value);
@@ -123,7 +128,7 @@ var app = new Vue({
     newSnippet: async function () {
       this.formDisabled = false;
 
-      const nextId = await readOne(this.db, 'next_id', 0);
+      const nextId = await DbUtil.readOne(this.db, 'next_id', 0);
       this.currentId = nextId ? nextId.next_id : 0;
 
       this.clearSelected();
@@ -141,7 +146,7 @@ var app = new Vue({
 
       this.inputForm();
 
-      put(this.db, 'next_id', {id: 0, next_id: this.currentId + 1});
+      DbUtil.put(this.db, 'next_id', {id: 0, next_id: this.currentId + 1});
     },
     inputForm: function () {
       this.snippetList[this.currentIndex].name = this.name;
@@ -161,7 +166,7 @@ var app = new Vue({
         html: this.html,
         css: this.css
       };
-      put(this.db, 'snippet', saveData);
+      DbUtil.put(this.db, 'snippet', saveData);
     },
     clearSelected: function () {
       this.snippetList.forEach(value => {
@@ -177,7 +182,7 @@ var app = new Vue({
       });
       this.snippetList[this.currentIndex].selected = true;
 
-      const snippet = await readOne(this.db, 'snippet', id);
+      const snippet = await DbUtil.readOne(this.db, 'snippet', id);
       this.formDisabled = false;
       this.currentId = id;
       this.name = snippet.name;
@@ -190,7 +195,7 @@ var app = new Vue({
       this.snippetList.forEach((value, index) => {
         if (value.id === this.currentId) {
           this.snippetList.splice(index, 1);
-          deleteOne(this.db, 'snippet', this.currentId);
+          DbUtil.deleteOne(this.db, 'snippet', this.currentId);
         }
       });
       this.name = '';
