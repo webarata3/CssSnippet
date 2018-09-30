@@ -6,9 +6,16 @@
   <link rel="stylesheet" href="./main.css">
  </head>
  <body>
+  <div class="side">
+   <input type="button" id="newButton" value="新規作成">
+   <div class="list">
+    <ul></ul>
+   </div>
+  </div>
   <main>
    <div>
-    <input type="text" size="50" placeholder="スニペットの名前">
+    <input type="text" size="50" id="snippetName" placeholder="スニペットの名前">
+    <input type="button" id="deleteButton" value="このスニペットを削除">
    </div>
    <div id="html_src">
     <div>

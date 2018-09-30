@@ -1,18 +1,86 @@
 @charset "utf-8";
 
+:root {
+  --input-text-size: 16px;
+}
+
 * {
-  font-family: monospace;
+  font-family: MeiryoKe_Gothic, "Ricty Diminished", "Osaka－等幅", "Osaka-等幅", Osaka-mono, "ＭＳ ゴシック", "MS Gothic", "Courier New", Courier, Monaco, Menlo, Consolas, "Lucida Console", monospace;
   box-sizing: border-box;
+}
+
+:disabled {
+  background-color: #0f0 !important;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: #fff;
+  display: flex;
+  height: 100%;
+}
+
+#newButton {
+  border-radius: 5px;
+  padding: 5px;
+  background-color: #00f;
+  color: #fff;
+}
+
+#deleteButton {
+  border-radius: 5px;
+  padding: 5px;
+  background-color: #f00;
+  color: #fff;
+}
+
+.list {
+  border: 1px solid #ccc;
+  width: 200px;
+  overflow-x: scroll;
+  margin: 5px;
+}
+
+.list ul {
+  margin: 0;
+  padding: 5px;
+  list-style-type: none;
+  cursor: pointer;
+}
+
+.list ul:empty::after {
+  content: '新規作成から作成してください。';
+}
+
+.list li {
+  white-space: nowrap;
+}
+
+.list li.selected {
+  background-color: #f99;
+}
+
+.list li:hover {
+  background-color: #ccc;
+}
+
+#snippetName {
+  font-size: var(--input-text-size);
 }
 
 main {
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
 #html_src {
   display: flex;
   flex-direction: row;
+  flex: 1;
 }
 
 #html_src > div {
@@ -20,12 +88,9 @@ main {
 }
 
 textarea {
-  font-size: 16px;
+  font-size: var(--input-text-size);
   height: 15em;
   width: 95%;
-}
-
-#html_src > textarea {
 }
 
 #wv {
