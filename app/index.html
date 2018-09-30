@@ -21,7 +21,7 @@
    </div>
    <main>
     <div>
-     <input type="text" size="50" placeholder="スニペットの名前"
+     <input type="text" size="40" placeholder="スニペットの名前"
             v-model="name" @input="inputForm" @focus="onFocusName" v-bind:disabled="formDisabled">
      <input type="button" id="deleteButton" value="このスニペットを削除" @click="onClickDeleteButton" v-bind:disabled="formDisabled">
     </div>
