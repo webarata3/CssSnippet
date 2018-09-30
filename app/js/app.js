@@ -71,6 +71,12 @@ var app = new Vue({
       this.htmlSource = `data:text/html; charset=utf-8,${this.html}<style>${this.css}</style>`;
       this.saveSnippet();
     },
+    onFocusName: function (event) {
+      const text = event.currentTarget.value;
+      if (text === '新規スニペット') {
+        event.currentTarget.select(0, '新規スニペット'.length);
+      }
+    },
     saveSnippet: function () {
       const saveData = {
         name: this.name ? this.name : '新規スニペット',
