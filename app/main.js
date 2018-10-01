@@ -59,17 +59,12 @@ function initMenu() {
       ]
     },
     {
-      label: '表示',
+      label: '開発',
       submenu: [
         {
-          label: 'Reload',
+          label: '再読込',
           accelerator: 'Command+R',
-          click: function() { mainWindow.restart(); }
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: function() { mainWindow.setFullScreen(!mainWindow.isFullScreen()); }
+          click: function() { mainWindow.reload(); }
         },
         {
           label: 'Toggle Developer Tools',
