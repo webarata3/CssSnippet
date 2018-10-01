@@ -57,6 +57,26 @@ function initMenu() {
           ]
         }
       ]
+    },
+    {
+      label: '表示',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'Command+R',
+          click: function() { mainWindow.restart(); }
+        },
+        {
+          label: 'Toggle Full Screen',
+          accelerator: 'Ctrl+Command+F',
+          click: function() { mainWindow.setFullScreen(!mainWindow.isFullScreen()); }
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: 'Alt+Command+I',
+          click: function() { mainWindow.toggleDevTools(); }
+        },
+      ]
     }
   ];
 
