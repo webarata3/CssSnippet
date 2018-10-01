@@ -8,6 +8,10 @@ input:disabled {
   opacity: 0.5;
 }
 
+label.disabled {
+  color: #ccc;
+}
+
 main {
   display: flex;
   flex-direction: column;

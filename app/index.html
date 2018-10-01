@@ -35,11 +35,11 @@
        </div>
        <div id="html_src">
         <div>
-         <label for="html">HTML</label>
+         <label for="html" v-bind:class="{disabled: formDisabled}">HTML</label>
          <textarea id="html" class="form-control" v-model="html" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
         </div>
         <div>
-         <label for="css">CSS</label>
+         <label for="css" v-bind:class="{disabled: formDisabled}">CSS</label>
          <textarea id="css" class="form-control" v-model="css" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
         </div>
        </div>

@@ -142,6 +142,7 @@ function importFile() {
 }
 
 ipcMain.on('importJsonResponse', event => {
+  mainWindow.reload();
   dialog.showMessageBox({
     type: 'info',
     title: 'インポート',
