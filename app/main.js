@@ -59,6 +59,39 @@ function initMenu() {
       ]
     },
     {
+      label: '編集',
+      submenu: [
+        {
+          label: '元に戻す',
+          accelerator: 'Command+Z',
+          role: 'undo'
+        },
+        {
+          label: 'やり直し',
+          accelerator: 'Command+Y',
+          role: 'redo'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: '切り取り',
+          accelerator: 'Command+X',
+          role: 'cut'
+        },
+        {
+          label: 'コピー',
+          accelerator: 'Command+C',
+          role: 'copy'
+        },
+        {
+          label: '貼り付け',
+          accelerator: 'Command+V',
+          role: 'paste'
+        }
+      ]
+    },
+    {
       label: '開発',
       submenu: [
         {
