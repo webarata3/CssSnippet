@@ -3,43 +3,55 @@
  <head>
   <meta charset="utf-8">
   <title>CSSスニペット</title>
+  <link rel="stylesheet" href="css/photon.min.css">
   <link rel="stylesheet" href="css/main.css">
  </head>
  <body>
-  <div id="app">
-   <div class="side">
-    <input type="button" id="newButton" @click="newSnippet" value="新規作成">
-    <div id="list" class="list">
-     <ul>
-      <snippet-item
-       v-for="snippet in snippetList"
-       v-bind:snippet="snippet"
-       v-bind:key="snippet.id"
-       v-on:select-snippet="onSelectSnippet"></snippet-item>
-     </ul>
+  <div id="app" class="window">
+   <!-- Your app's content goes inside .window-content -->
+   <div class="window-content">
+    <div class="pane-group">
+     <div class="pane pane-sm sidebar">
+      <ul class="list-group">
+       <li class="list-group-header">
+        <input type="button" id="newButton" class="btn btn-primary" @click="newSnippet" value="新規作成">
+       </li>
+       <snippet-item
+        v-for="snippet in snippetList"
+        v-bind:snippet="snippet"
+        v-bind:key="snippet.id"
+        v-on:select-snippet="onSelectSnippet"
+        v-on:delete-snippet="onDeleteSnippet"
+        class="list-group-item"></snippet-item>
+      </ul>
+     </div>
+     <div class="pane">
+      <main>
+       <div>
+        <input id="snippetName" type="text" size="40" class="form-control" placeholder="スニペットの名前"
+               v-model="name" @input="inputForm" @focus="onFocusName" v-bind:disabled="formDisabled">
+        <input type="button" id="deleteButton" value="このスニペットを削除" @click="onClickDeleteButton"
+               v-bind:disabled="formDisabled" class="btn btn-negative">
+       </div>
+       <div id="html_src">
+        <div>
+         <div>HTML</div>
+         <textarea class="form-control" v-model="html" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
+        </div>
+        <div>
+         <div>CSS</div>
+         <textarea class="form-control" v-model="css" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
+        </div>
+       </div>
+       <webview v-bind:src="htmlSource"></webview>
+      </main>
+     </div>
     </div>
    </div>
-   <main>
-    <div>
-     <input type="text" size="40" placeholder="スニペットの名前"
-            v-model="name" @input="inputForm" @focus="onFocusName" v-bind:disabled="formDisabled">
-     <input type="button" id="deleteButton" value="このスニペットを削除" @click="onClickDeleteButton" v-bind:disabled="formDisabled">
-    </div>
-    <div id="html_src">
-     <div>
-      <div>HTML</div>
-      <textarea v-model="html" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
-     </div>
-     <div>
-      <div>CSS</div>
-      <textarea v-model="css" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
-     </div>
-    </div>
-    <webview v-bind:src="htmlSource"></webview>
-   </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="js/DbUtil.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/FileOperation.js"></script>
  </body>
 </html>

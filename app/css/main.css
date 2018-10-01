@@ -1,107 +1,41 @@
 @charset "utf-8";
 
-:root {
-  --input-text-size: 16px;
+button:disabled {
+  opacity: 0.5;
 }
 
-* {
-  font-family: MeiryoKe_Gothic, "Ricty Diminished", "Osaka－等幅", "Osaka-等幅", Osaka-mono, "ＭＳ ゴシック", "MS Gothic", "Courier New", Courier, Monaco, Menlo, Consolas, "Lucida Console", monospace;
-  box-sizing: border-box;
-}
-
-:disabled {
-  background-color: #ccc !important;
-  color: #eee;
-}
-
-#app {
-  height: 100vh;
-}
-
-body {
-  background-color: #fff;
-}
-
-#app {
-  display: flex;
-}
-
-#newButton {
-  border-radius: 5px;
-  padding: 5px;
-  background-color: #00f;
-  color: #fff;
-}
-
-.list {
-  border: 1px solid #ccc;
-  width: 200px;
-  overflow-x: scroll;
-  margin: 5px;
-}
-
-.list ul {
-  margin: 0;
-  padding: 5px;
-  list-style-type: none;
-  cursor: pointer;
-}
-
-.list ul:empty::after {
-  content: '新規作成ボタンを押して、スニペットを作成してください。';
-}
-
-.list li {
-  white-space: nowrap;
-}
-
-.list li.selected {
-  background-color: #f99;
-}
-
-.list li:hover {
-  background-color: #ccc;
+input:disabled {
+  opacity: 0.5;
 }
 
 main {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 5px;
   height: 100%;
 }
 
-#deleteButton {
-  border-radius: 5px;
-  padding: 5px;
-  background-color: #f00;
-  color: #fff;
-}
-
 #snippetName {
-  font-size: var(--input-text-size);
-}
-
-main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+  width: 25em;
 }
 
 #html_src {
   display: flex;
   flex-direction: row;
+  margin: 5px 0;
   flex: 1;
 }
 
 #html_src > div {
+  display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
-input {
-  font-size: var(--input-text-size);
-}
-
 textarea {
-  font-size: var(--input-text-size);
-  height: 15em;
-  width: 95%;
+  font-family: MeiryoKe_Gothic, "Ricty Diminished", "Osaka－等幅", "Osaka-等幅", Osaka-mono, "ＭＳ ゴシック", "MS Gothic", "Courier New", Courier, Monaco, Menlo, Consolas, "Lucida Console", monospace;
+  flex: 1;
 }
 
 webview {

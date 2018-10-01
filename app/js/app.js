@@ -2,22 +2,49 @@
 
 const NEW_SNIPPET = '新規スニペット';
 
-Vue.component('snippet-item', {
+const SnippetItem = {
   template: `<li v-bind:id="snippet.id"
-                 v-bind:class="{ selected: snippet.selected }"
-                 @click="onClickSnippet">{{ snippet.name || '新規スニペット' }}</li>`,
+                 v-bind:class="{ active: snippet.selected }"
+                 @click="onClickSnippet"
+                 @contextmenu="onContextMenu">{{ snippet.name || '新規スニペット' }}</li>`,
   props: {
-    snippet: {}
+    snippet: Object
+  },
+  date: function() {
+    return {
+      menu: {},
+      remote: {}
+    }
+  },
+  created: function() {
+    // コンテキストメニュー
+    this.remote = require('electron').remote;
+    const {Menu, MenuItem} = this.remote;
+
+    this.menu = new Menu();
+    this.menu.append(new MenuItem({
+      label: 'このスニペットを削除',
+      click: () => {
+        this.$emit('delete-snippet', this.snippet.id);
+      }
+    }));
   },
   methods: {
-    onClickSnippet: function () {
+    onContextMenu: function(event) {
+      event.preventDefault();
+      this.menu.popup(this.remote.getCurrentWindow());
+    },
+    onClickSnippet: function() {
       this.$emit('select-snippet', this.snippet.id);
     }
   }
-});
+};
 
-var app = new Vue({
+new Vue({
   el: '#app',
+  components: {
+    'snippet-item': SnippetItem
+  },
   data: {
     db: {},
     currentId: 0,
@@ -30,8 +57,8 @@ var app = new Vue({
     snippetList: [],
     currentIndex: 0
   },
-  created: async function () {
-    this.db = await DbUtil.init((db) => {
+  created: async function() {
+    this.db = await DbUtil.init(db => {
       db.createObjectStore('next_id', {keyPath: 'id'});
       db.createObjectStore('snippet', {keyPath: 'id'});
     });
@@ -43,7 +70,7 @@ var app = new Vue({
     });
   },
   methods: {
-    newSnippet: async function () {
+    newSnippet: async function() {
       this.formDisabled = false;
 
       const nextId = await DbUtil.readOne(this.db, 'next_id', 0);
@@ -64,39 +91,37 @@ var app = new Vue({
 
       this.inputForm();
 
-      DbUtil.put(this.db, 'next_id', {id: 0, next_id: this.currentId + 1});
+      await DbUtil.put(this.db, 'next_id', {id: 0, next_id: this.currentId + 1});
     },
-    inputForm: function () {
+    inputForm: function() {
       this.snippetList[this.currentIndex].name = this.name;
       this.htmlSource = `data:text/html; charset=utf-8,${this.html}<style>${this.css}</style>`;
       this.saveSnippet();
     },
-    onFocusName: function (event) {
+    onFocusName: function(event) {
       const text = event.currentTarget.value;
       if (text === NEW_SNIPPET) {
         event.currentTarget.select(0, NEW_SNIPPET.length);
       }
     },
-    saveSnippet: function () {
+    saveSnippet: async function() {
       const saveData = {
         id: this.currentId,
         name: this.name ? this.name : NEW_SNIPPET,
         html: this.html,
         css: this.css
       };
-      DbUtil.put(this.db, 'snippet', saveData);
+      await DbUtil.put(this.db, 'snippet', saveData);
     },
-    clearSelected: function () {
+    clearSelected: function() {
       this.snippetList.forEach(value => {
         value.selected = false;
       });
     },
-    onSelectSnippet: async function (id) {
+    onSelectSnippet: async function(id) {
       this.clearSelected();
-      this.snippetList.forEach((value, index) => {
-        if (value.id === id) {
-          this.currentIndex = index;
-        }
+      this.currentIndex = this.snippetList.findIndex(element => {
+        return element.id === id;
       });
       this.snippetList[this.currentIndex].selected = true;
 
@@ -108,14 +133,23 @@ var app = new Vue({
       this.css = snippet.css;
       this.inputForm();
     },
-    onClickDeleteButton: function () {
+    onDeleteSnippet: async function(id) {
       if (!confirm('このデータを削除しますか？')) return;
-      this.snippetList.forEach((value, index) => {
-        if (value.id === this.currentId) {
-          this.snippetList.splice(index, 1);
-          DbUtil.deleteOne(this.db, 'snippet', this.currentId);
-        }
+
+      const deleteIndex = this.snippetList.findIndex(element => {
+        return element.id === id;
       });
+      this.snippetList.splice(deleteIndex, 1);
+      await DbUtil.deleteOne(this.db, 'snippet', id);
+    },
+    onClickDeleteButton: async function() {
+      if (!confirm('このデータを削除しますか？')) return;
+
+      const deleteIndex = this.snippetList.findIndex(element => {
+        return element.id === this.currentId;
+      });
+      this.snippetList.splice(deleteIndex, 1);
+      await DbUtil.deleteOne(this.db, 'snippet', this.currentId);
       this.name = '';
       this.html = '';
       this.css = '';
