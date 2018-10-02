@@ -29,7 +29,8 @@
       <main>
        <div>
         <input id="snippetName" type="text" size="40" class="form-control" placeholder="スニペットの名前"
-               v-model="name" @input="inputForm" @focus="onFocusName" v-bind:disabled="formDisabled">
+               v-model="name" @input="inputForm" @focus="onFocusName" v-bind:disabled="formDisabled"
+               @contextmenu="onContextMenu">
         <input type="button" id="deleteButton" value="このスニペットを削除" @click="onClickDeleteButton"
                v-bind:disabled="formDisabled" class="btn btn-negative">
        </div>

@@ -89,34 +89,12 @@ function initMenu() {
     {
       label: '編集',
       submenu: [
-        {
-          label: '元に戻す',
-          accelerator: 'CmdOrCtrl+Z',
-          role: 'undo'
-        },
-        {
-          label: 'やり直し',
-          accelerator: 'CmdOrCtrl+Y',
-          role: 'redo'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: '切り取り',
-          accelerator: 'CmdOrCtrl+X',
-          role: 'cut'
-        },
-        {
-          label: 'コピー',
-          accelerator: 'CmdOrCtrl+C',
-          role: 'copy'
-        },
-        {
-          label: '貼り付け',
-          accelerator: 'CmdOrCtrl+V',
-          role: 'paste'
-        }
+        {role: 'undo'},
+        {role: 'redo'},
+        {type: 'separator'},
+        {role: 'cut'},
+        {role: 'copy'},
+        {role: 'paste'}
       ]
     },
     {

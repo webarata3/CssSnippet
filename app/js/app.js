@@ -57,6 +57,8 @@ new Vue({
     htmlSource: 'data:text/html; charset=utf-8,',
     snippetList: [],
     currentIndex: 0,
+    remote: {},
+    menu: {},
     htmlOptions: {
       fontSize: 16,
       tabSize: 1
@@ -77,6 +79,14 @@ new Vue({
       value.selected = false;
       this.snippetList.push(value);
     });
+
+    this.remote = require('electron').remote;
+    const {Menu} = this.remote;
+    this.menu = Menu.buildFromTemplate([
+      {role:'copy'},
+      {role:'cut'},
+      {role:'paste'},
+    ]);
   },
   methods: {
     htmlEditorInit:function () {
@@ -171,6 +181,10 @@ new Vue({
       this.html = '';
       this.css = '';
       this.formDisabled = true;
+    },
+    onContextMenu: function () {
+      event.preventDefault();
+      this.menu.popup(this.remote.getCurrentWindow());
     }
   }
 });
