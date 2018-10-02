@@ -14,27 +14,41 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', function() {
-  let bounds_info;
-  try {
-    bounds_info = JSON.parse(fs.readFileSync(info_path, 'utf-8'));
+  const gotTheLock = app.requestSingleInstanceLock();
+
+  if (!gotTheLock) {
+    app.quit()
+  } else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+      }
+    });
+
+    let bounds_info;
+    try {
+      bounds_info = JSON.parse(fs.readFileSync(info_path, 'utf-8'));
+    }
+    catch (e) {
+      bounds_info = {width: 800, height: 600};  // デフォルトバリュー
+    }
+
+    // ブラウザ(Chromium)の起動, 初期画面のロード
+    mainWindow = new BrowserWindow(bounds_info);
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
+
+    mainWindow.on('close', function () {
+      fs.writeFileSync(info_path, JSON.stringify(mainWindow.getBounds()));
+    });
+
+    mainWindow.on('closed', () => {
+      mainWindow = null;
+    });
+
+    initMenu();
   }
-  catch (e) {
-    bounds_info = {width: 800, height: 600};  // デフォルトバリュー
-  }
-
-  // ブラウザ(Chromium)の起動, 初期画面のロード
-  mainWindow = new BrowserWindow(bounds_info);
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
-
-  mainWindow.on('close', function() {
-    fs.writeFileSync(info_path, JSON.stringify(mainWindow.getBounds()));
-  });
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
-  initMenu();
 });
 
 function initMenu() {
