@@ -13,7 +13,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('ready', function() {
+app.on('ready', function () {
   const gotTheLock = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
@@ -52,7 +52,7 @@ app.on('ready', function() {
 });
 
 function initMenu() {
-  let     template = [
+  let template = [
     {
       label: 'ファイル',
       submenu: [
@@ -103,14 +103,14 @@ function initMenu() {
         {
           label: '再読込',
           accelerator: 'CmdOrCtrl+R',
-          click: function() {
+          click: function () {
             mainWindow.reload();
           }
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+CmdOrCtrl+I',
-          click: function() {
+          click: function () {
             mainWindow.toggleDevTools();
           }
         },
@@ -121,13 +121,17 @@ function initMenu() {
       submenu: [
         {
           label: 'クレジット',
-          click: function() {
-            shell.openExternal('https://www.yahoo.co.jp');
+          click: function () {
+            const child = new BrowserWindow({parent: mainWindow, modal: true, show: false});
+            child.loadURL(`file://${__dirname}/credit.html`);
+            child.once('ready-to-show', () => {
+              child.show();
+            });
           }
         },
         {
           label: 'バージョン情報',
-          click: function() {
+          click: function () {
             dialog.showMessageBox({
               type: 'none',
               title: 'バージョン情報',
