@@ -43,7 +43,8 @@ const SnippetItem = {
 new Vue({
   el: '#app',
   components: {
-    'snippet-item': SnippetItem
+    'snippet-item': SnippetItem,
+    editor:require('vue2-ace-editor'),
   },
   data: {
     db: {},
@@ -55,7 +56,15 @@ new Vue({
     selectedName: '',
     htmlSource: 'data:text/html; charset=utf-8,',
     snippetList: [],
-    currentIndex: 0
+    currentIndex: 0,
+    htmlOptions: {
+      fontSize: 16,
+      tabSize: 1
+    },
+    cssOptions: {
+      fontSize: 16,
+      tabSize: 2
+    }
   },
   created: async function() {
     this.db = await DbUtil.init(db => {
@@ -70,6 +79,14 @@ new Vue({
     });
   },
   methods: {
+    htmlEditorInit:function () {
+      require('brace/mode/html');
+      require('brace/theme/chrome');
+    },
+    javascriptEditorInit:function () {
+      require('brace/mode/css');
+      require('brace/theme/chrome');
+    },
     newSnippet: async function() {
       this.formDisabled = false;
 

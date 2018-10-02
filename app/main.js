@@ -1,9 +1,11 @@
 const electron = require('electron');
-const {app, Menu, dialog, ipcMain} = electron;
+const {app, Menu, dialog, ipcMain, shell} = electron;
+const path = require('path');
 const BrowserWindow = electron.BrowserWindow;
 const fs = require('fs');
 
 let mainWindow = null;
+const info_path = path.join(app.getPath("userData"), "bounds-info.json");
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -12,9 +14,21 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', function() {
+  let bounds_info;
+  try {
+    bounds_info = JSON.parse(fs.readFileSync(info_path, 'utf-8'));
+  }
+  catch (e) {
+    bounds_info = {width: 800, height: 600};  // デフォルトバリュー
+  }
+
   // ブラウザ(Chromium)の起動, 初期画面のロード
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+  mainWindow = new BrowserWindow(bounds_info);
   mainWindow.loadURL('file://' + __dirname + '/index.html');
+
+  mainWindow.on('close', function() {
+    fs.writeFileSync(info_path, JSON.stringify(mainWindow.getBounds()));
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -24,7 +38,7 @@ app.on('ready', function() {
 });
 
 function initMenu() {
-  const template = [
+  let     template = [
     {
       label: 'ファイル',
       submenu: [
@@ -63,12 +77,12 @@ function initMenu() {
       submenu: [
         {
           label: '元に戻す',
-          accelerator: 'Command+Z',
+          accelerator: 'Ctrl+Z',
           role: 'undo'
         },
         {
           label: 'やり直し',
-          accelerator: 'Command+Y',
+          accelerator: 'Ctrl+Y',
           role: 'redo'
         },
         {
@@ -76,17 +90,17 @@ function initMenu() {
         },
         {
           label: '切り取り',
-          accelerator: 'Command+X',
+          accelerator: 'Ctrl+X',
           role: 'cut'
         },
         {
           label: 'コピー',
-          accelerator: 'Command+C',
+          accelerator: 'Ctrl+C',
           role: 'copy'
         },
         {
           label: '貼り付け',
-          accelerator: 'Command+V',
+          accelerator: 'Ctrl+V',
           role: 'paste'
         }
       ]
@@ -96,18 +110,44 @@ function initMenu() {
       submenu: [
         {
           label: '再読込',
-          accelerator: 'Command+R',
-          click: function() { mainWindow.reload(); }
+          accelerator: 'Ctrl+R',
+          click: function() {
+            mainWindow.reload();
+          }
         },
         {
           label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
-          click: function() { mainWindow.toggleDevTools(); }
+          accelerator: 'Alt+Ctrl+I',
+          click: function() {
+            mainWindow.toggleDevTools();
+          }
         },
+      ]
+    },
+    {
+      label: 'ヘルプ',
+      submenu: [
+        {
+          label: 'クレジット',
+          click: function() {
+            shell.openExternal('https://www.yahoo.co.jp');
+          }
+        },
+        {
+          label: 'バージョン情報',
+          click: function() {
+            dialog.showMessageBox({
+              type: 'none',
+              title: 'バージョン情報',
+              message:
+                `CSSスニペット version 1.0.0
+©2018 webarata3（Shinichi ARATA）`
+            });
+          }
+        }
       ]
     }
   ];
-
   if (process.platform === 'darwin') {
     template.unshift({
       label: app.getName(),

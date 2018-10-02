@@ -35,12 +35,16 @@
        </div>
        <div id="html_src">
         <div>
-         <label for="html" v-bind:class="{disabled: formDisabled}">HTML</label>
-         <textarea id="html" class="form-control" v-model="html" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
+         <div class="screen" v-bind:class="{ disabledEditor: formDisabled }"></div>
+         <label>HTML</label>
+         <editor v-model="html" @init="htmlEditorInit();" @input="inputForm" v-bind:options="htmlOptions"
+                 lang="html" theme="chrome"></editor>
         </div>
         <div>
-         <label for="css" v-bind:class="{disabled: formDisabled}">CSS</label>
-         <textarea id="css" class="form-control" v-model="css" @input="inputForm" v-bind:disabled="formDisabled"></textarea>
+         <div class="screen" v-bind:class="{ disabledEditor: formDisabled }"></div>
+         <label>CSS</label>
+         <editor v-model="css" @init="javascriptEditorInit();" @input="inputForm" v-bind:options="cssOptions"
+                 lang="css" theme="chrome"></editor>
         </div>
        </div>
        <webview v-bind:src="htmlSource"></webview>
