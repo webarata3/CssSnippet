@@ -77,12 +77,12 @@ function initMenu() {
       submenu: [
         {
           label: '元に戻す',
-          accelerator: 'Ctrl+Z',
+          accelerator: 'CmdOrCtrl+Z',
           role: 'undo'
         },
         {
           label: 'やり直し',
-          accelerator: 'Ctrl+Y',
+          accelerator: 'CmdOrCtrl+Y',
           role: 'redo'
         },
         {
@@ -90,17 +90,17 @@ function initMenu() {
         },
         {
           label: '切り取り',
-          accelerator: 'Ctrl+X',
+          accelerator: 'CmdOrCtrl+X',
           role: 'cut'
         },
         {
           label: 'コピー',
-          accelerator: 'Ctrl+C',
+          accelerator: 'CmdOrCtrl+C',
           role: 'copy'
         },
         {
           label: '貼り付け',
-          accelerator: 'Ctrl+V',
+          accelerator: 'CmdOrCtrl+V',
           role: 'paste'
         }
       ]
@@ -110,14 +110,14 @@ function initMenu() {
       submenu: [
         {
           label: '再読込',
-          accelerator: 'Ctrl+R',
+          accelerator: 'CmdOrCtrl+R',
           click: function() {
             mainWindow.reload();
           }
         },
         {
           label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Ctrl+I',
+          accelerator: 'Alt+CmdOrCtrl+I',
           click: function() {
             mainWindow.toggleDevTools();
           }
@@ -140,7 +140,7 @@ function initMenu() {
               type: 'none',
               title: 'バージョン情報',
               message:
-                `CSSスニペット version 1.0.0
+                `${app.getName()} version ${app.getVersion()}
 ©2018 webarata3（Shinichi ARATA）`
             });
           }
