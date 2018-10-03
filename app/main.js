@@ -131,11 +131,7 @@ function initMenu() {
         {
           label: 'クレジット',
           click: function () {
-            const child = new BrowserWindow({parent: mainWindow, modal: true, show: false});
-            child.loadURL(`file://${__dirname}/credit.html`);
-            child.once('ready-to-show', () => {
-              child.show();
-            });
+            shell.openExternal('https://github.com/webarata3/CssSnippet/blob/master/credit.md');
           }
         },
         {
