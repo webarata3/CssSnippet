@@ -7,3 +7,4 @@
 |[Vue.js](https://vuejs.org)|[MIT](https://github.com/vuejs/vue/blob/dev/LICENSE)|
 |[Ace](https://ace.c9.io)|[BSD](https://github.com/ajaxorg/ace/blob/master/LICENSE)|
 |[vue2-ace-editor](https://github.com/chairuosen/vue2-ace-editor)|[Apache 2.0](https://github.com/chairuosen/vue2-ace-editor/blob/master/LICENSE)|
+|[Photon](http://photonkit.com)|[MIT](https://github.com/connors/photon/blob/master/LICENSE)|
