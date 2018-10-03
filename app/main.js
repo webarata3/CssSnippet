@@ -13,7 +13,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('ready', function () {
+function createWindow() {
   const gotTheLock = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
@@ -47,6 +47,16 @@ app.on('ready', function () {
     });
 
     initMenu();
+  }
+}
+
+app.on('ready', function () {
+  createWindow();
+});
+
+app.on('activate', () => {
+  if (win === null) {
+    createWindow();
   }
 });
 
