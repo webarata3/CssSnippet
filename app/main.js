@@ -17,7 +17,7 @@ app.on('ready', function () {
   const gotTheLock = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
-    app.quit()
+    app.quit();
   } else {
     app.on('second-instance', (event, commandLine, workingDirectory) => {
       // Someone tried to run a second instance, we should focus our window.
@@ -32,10 +32,9 @@ app.on('ready', function () {
       bounds_info = JSON.parse(fs.readFileSync(info_path, 'utf-8'));
     }
     catch (e) {
-      bounds_info = {width: 800, height: 600};  // デフォルトバリュー
+      bounds_info = {width: 800, height: 600};
     }
 
-    // ブラウザ(Chromium)の起動, 初期画面のロード
     mainWindow = new BrowserWindow(bounds_info);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
