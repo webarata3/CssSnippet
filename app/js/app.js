@@ -2,18 +2,6 @@
 
 const NEW_SNIPPET = '新規スニペット';
 
-const ESCAPE_LIST = [
-  ['<script', '&lt;script'],
-  ['</script', '&lt;/script']
-];
-
-function escape(value) {
-  ESCAPE_LIST.forEach(ESCAPE => {
-    value = value.replace(ESCAPE[0], ESCAPE[1]);
-  });
-  return value;
-}
-
 const SnippetItem = {
   template: `<li v-bind:id="snippet.id"
                  v-bind:class="{ active: snippet.selected }"
@@ -134,7 +122,7 @@ new Vue({
     },
     inputForm: function() {
       this.snippetList[this.currentIndex].name = this.name;
-      this.htmlSource = `data:text/html; charset=utf-8,${escape(this.html)}<style>${this.css}</style>`;
+      this.htmlSource = `data:text/html; charset=utf-8,${this.html}<style>${this.css}</style>`;
       this.saveSnippet();
     },
     onFocusName: function(event) {

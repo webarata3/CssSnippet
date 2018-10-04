@@ -3,6 +3,12 @@
  <head>
   <meta charset="utf-8">
   <title>CSSスニペット</title>
+  <meta http-equiv="Content-Security-Policy"
+        content="   default-src 'self';
+                    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+                    style-src 'self' 'unsafe-inline';
+                    img-src 'self' data:;
+                    worker-src 'self' blob:;">
   <link rel="stylesheet" href="css/photon.min.css">
   <link rel="stylesheet" href="css/main.css">
  </head>
@@ -48,7 +54,7 @@
                  lang="css" theme="chrome"></editor>
         </div>
        </div>
-       <webview v-bind:src="htmlSource"></webview>
+       <webview v-bind:src="htmlSource" webpreferences="javascript=no"></webview>
       </main>
      </div>
     </div>
