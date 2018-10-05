@@ -10,13 +10,13 @@ const SnippetItem = {
   props: {
     snippet: Object
   },
-  date: function() {
+  data: function () {
     return {
       menu: {},
       remote: {}
     }
   },
-  created: function() {
+  created: function () {
     // コンテキストメニュー
     this.remote = require('electron').remote;
     const {Menu, MenuItem} = this.remote;
@@ -30,11 +30,11 @@ const SnippetItem = {
     }));
   },
   methods: {
-    onContextMenu: function(event) {
+    onContextMenu: function (event) {
       event.preventDefault();
       this.menu.popup(this.remote.getCurrentWindow());
     },
-    onClickSnippet: function() {
+    onClickSnippet: function () {
       this.$emit('select-snippet', this.snippet.id);
     }
   }
@@ -61,14 +61,18 @@ new Vue({
     menu: {},
     htmlOptions: {
       fontSize: 16,
-      tabSize: 1
+      tabSize: 1,
+      wrap: true,
+      useSoftTabs: true
     },
     cssOptions: {
       fontSize: 16,
-      tabSize: 2
+      tabSize: 2,
+      wrap: true,
+      useSoftTabs: true
     }
   },
-  created: async function() {
+  created: async function () {
     this.db = await DbUtil.init(db => {
       db.createObjectStore('next_id', {keyPath: 'id'});
       db.createObjectStore('snippet', {keyPath: 'id'});
@@ -83,21 +87,21 @@ new Vue({
     this.remote = require('electron').remote;
     const {Menu} = this.remote;
     this.menu = Menu.buildFromTemplate([
-      {role:'copy'},
-      {role:'cut'},
-      {role:'paste'},
+      {role: 'copy'},
+      {role: 'cut'},
+      {role: 'paste'},
     ]);
   },
   methods: {
-    htmlEditorInit:function () {
+    htmlEditorInit: function () {
       require('brace/mode/html');
       require('brace/theme/chrome');
     },
-    javascriptEditorInit:function () {
+    javascriptEditorInit: function () {
       require('brace/mode/css');
       require('brace/theme/chrome');
     },
-    newSnippet: async function() {
+    newSnippet: async function () {
       this.formDisabled = false;
 
       const nextId = await DbUtil.readOne(this.db, 'next_id', 0);
@@ -120,18 +124,18 @@ new Vue({
 
       await DbUtil.put(this.db, 'next_id', {id: 0, next_id: this.currentId + 1});
     },
-    inputForm: function() {
+    inputForm: function () {
       this.snippetList[this.currentIndex].name = this.name;
       this.htmlSource = `data:text/html; charset=utf-8,${this.html}<style>${this.css}</style>`;
       this.saveSnippet();
     },
-    onFocusName: function(event) {
+    onFocusName: function (event) {
       const text = event.currentTarget.value;
       if (text === NEW_SNIPPET) {
         event.currentTarget.select(0, NEW_SNIPPET.length);
       }
     },
-    saveSnippet: async function() {
+    saveSnippet: async function () {
       const saveData = {
         id: this.currentId,
         name: this.name ? this.name : NEW_SNIPPET,
@@ -140,12 +144,12 @@ new Vue({
       };
       await DbUtil.put(this.db, 'snippet', saveData);
     },
-    clearSelected: function() {
+    clearSelected: function () {
       this.snippetList.forEach(value => {
         value.selected = false;
       });
     },
-    onSelectSnippet: async function(id) {
+    onSelectSnippet: async function (id) {
       this.clearSelected();
       this.currentIndex = this.snippetList.findIndex(element => {
         return element.id === id;
@@ -160,7 +164,7 @@ new Vue({
       this.css = snippet.css;
       this.inputForm();
     },
-    onDeleteSnippet: async function(id) {
+    onDeleteSnippet: async function (id) {
       if (!confirm('このデータを削除しますか？')) return;
 
       const deleteIndex = this.snippetList.findIndex(element => {
@@ -169,7 +173,7 @@ new Vue({
       this.snippetList.splice(deleteIndex, 1);
       await DbUtil.deleteOne(this.db, 'snippet', id);
     },
-    onClickDeleteButton: async function() {
+    onClickDeleteButton: async function () {
       if (!confirm('このデータを削除しますか？')) return;
 
       const deleteIndex = this.snippetList.findIndex(element => {

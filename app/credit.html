@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8">
+  <title>クレジット</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+   body {
+    margin: 10px;
+   }
+
+   table {
+    border-collapse: collapse;
+   }
+
+   td, th {
+    border: 1px solid #ccc;
+    padding: 3px;
+   }
+  </style>
+ </head>
+ <body>
+  <button id="close-btn">閉じる</button>
+  <h1>CSSスニペット クレジット</h1>
+  <table>
+   <thead>
+    <tr>
+     <th>ソフトウェア</th>
+     <th>ライセンス</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td><a target="_blank" href="https://electronjs.org">Electron</a></td>
+     <td><a target="_blank" href="https://github.com/electron/electron/blob/master/LICENSE">MIT</a></td>
+    </tr>
+    <tr>
+     <td><a target="_blank" href="https://vuejs.org">Vue.js</a></td>
+     <td><a target="_blank" href="https://github.com/vuejs/vue/blob/dev/LICENSE">MIT</a></td>
+    </tr>
+    <tr>
+     <td><a target="_blank" href="https://ace.c9.io">Ace</a></td>
+     <td><a target="_blank" href="https://github.com/ajaxorg/ace/blob/master/LICENSE">BSD</a></td>
+    </tr>
+    <tr>
+     <td><a target="_blank" href="https://github.com/chairuosen/vue2-ace-editor">vue2-ace-editor</a></td>
+     <td><a target="_blank" href="https://github.com/chairuosen/vue2-ace-editor/blob/master/LICENSE">Apache 2.0</a></td>
+    </tr>
+   </tbody>
+  </table>
+  <script>
+   const remote = require('electron').remote;
+   document.getElementById("close-btn").addEventListener("click", function (e) {
+     var window = remote.getCurrentWindow();
+     window.close();
+   });
+  </script>
+ </body>
+</html>

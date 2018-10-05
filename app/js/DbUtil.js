@@ -2,7 +2,7 @@
 
 class DbUtil {
   static init(callback) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const request = window.indexedDB.open('snippet', 1);
       request.onupgradeneeded = event => {
         const db = event.target.result;
@@ -17,7 +17,7 @@ class DbUtil {
   static readOne(db, storeName, id) {
     const objectStore = db.transaction(storeName, 'readonly').objectStore(storeName);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const request = objectStore.get(id);
 
       request.onsuccess = (event) => {
@@ -34,10 +34,10 @@ class DbUtil {
 
     const resultArray = [];
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const range = IDBKeyRange.lowerBound(0);
       const cursorRequest = objectStore.openCursor(range);
-      cursorRequest.onsuccess = function(event) {
+      cursorRequest.onsuccess = function (event) {
         const result = event.target.result;
         if (!result) {
           resolve(resultArray);
@@ -56,13 +56,13 @@ class DbUtil {
     const tx = db.transaction(storeName, 'readwrite');
     const objectStore = tx.objectStore(storeName);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const request = objectStore.put(data);
 
-      request.onsuccess = function() {
+      request.onsuccess = function () {
       };
 
-      tx.oncomplete = function() {
+      tx.oncomplete = function () {
         resolve();
       };
     });
@@ -71,10 +71,10 @@ class DbUtil {
   static deleteOne(db, storeName, key) {
     const objectStore = db.transaction(storeName, "readwrite").objectStore(storeName);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const request = objectStore.delete(key);
 
-      request.onsuccess = function(event) {
+      request.onsuccess = function (event) {
         resolve();
       };
     });

@@ -4,17 +4,16 @@
   <meta charset="utf-8">
   <title>CSSスニペット</title>
   <meta http-equiv="Content-Security-Policy"
-        content="   default-src 'self';
-                    script-src 'self' 'unsafe-inline' 'unsafe-eval';
-                    style-src 'self' 'unsafe-inline';
-                    img-src 'self' data:;
-                    worker-src 'self' blob:;">
+        content="default-src 'self';
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval';
+                 style-src 'self' 'unsafe-inline';
+                 img-src 'self' data:;
+                 worker-src 'self' blob:;">
   <link rel="stylesheet" href="css/photon.min.css">
   <link rel="stylesheet" href="css/main.css">
  </head>
  <body>
   <div id="app" class="window">
-   <!-- Your app's content goes inside .window-content -->
    <div class="window-content">
     <div class="pane-group">
      <div class="pane pane-sm sidebar">
@@ -44,13 +43,13 @@
         <div>
          <div class="screen" v-bind:class="{ disabledEditor: formDisabled }"></div>
          <label>HTML</label>
-         <editor v-model="html" @init="htmlEditorInit();" @input="inputForm" v-bind:options="htmlOptions"
+         <editor ref="html" v-model="html" @init="htmlEditorInit();" @input="inputForm" v-bind:options="htmlOptions"
                  lang="html" theme="chrome"></editor>
         </div>
         <div>
          <div class="screen" v-bind:class="{ disabledEditor: formDisabled }"></div>
          <label>CSS</label>
-         <editor v-model="css" @init="javascriptEditorInit();" @input="inputForm" v-bind:options="cssOptions"
+         <editor ref="css" v-model="css" @init="javascriptEditorInit();" @input="inputForm" v-bind:options="cssOptions"
                  lang="css" theme="chrome"></editor>
         </div>
        </div>
