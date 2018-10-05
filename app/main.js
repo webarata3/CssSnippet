@@ -131,13 +131,7 @@ function initMenu() {
         {
           label: 'バージョン情報',
           click: function () {
-            dialog.showMessageBox({
-              type: 'none',
-              title: 'バージョン情報',
-              message:
-                `${app.getName()} version ${app.getVersion()}
-©2018 webarata3（Shinichi ARATA）`
-            });
+            showVersionInfo();
           }
         }
       ]
@@ -147,7 +141,12 @@ function initMenu() {
     template.unshift({
       label: app.getName(),
       submenu: [
-        {role: 'about'},
+        {
+          label: 'CSSスニペットについて',
+          click: function() {
+            showVersionInfo();
+          }
+        },
         {type: 'separator'},
         {role: 'services', submenu: []},
         {type: 'separator'},
@@ -162,6 +161,16 @@ function initMenu() {
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
+}
+
+function showVersionInfo() {
+  dialog.showMessageBox({
+    type: 'none',
+    title: 'バージョン情報',
+    message:
+      `${app.getName()} version ${app.getVersion()}
+©2018 webarata3（Shinichi ARATA）`
+  });
 }
 
 function exportFile() {
