@@ -73,12 +73,6 @@ function initMenu() {
               click() {
                 exportFile();
               }
-            },
-            {
-              label: 'HTMLファイル',
-              click() {
-                // TODO
-              }
             }
           ]
         },
