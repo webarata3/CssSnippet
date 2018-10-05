@@ -43,13 +43,13 @@
         <div>
          <div class="screen" v-bind:class="{ disabledEditor: formDisabled }"></div>
          <label>HTML</label>
-         <editor ref="html" v-model="html" @init="htmlEditorInit();" @input="inputForm" v-bind:options="htmlOptions"
+         <editor v-model="html" @init="htmlEditorInit();" @input="inputForm" v-bind:options="htmlOptions"
                  lang="html" theme="chrome"></editor>
         </div>
         <div>
          <div class="screen" v-bind:class="{ disabledEditor: formDisabled }"></div>
          <label>CSS</label>
-         <editor ref="css" v-model="css" @init="javascriptEditorInit();" @input="inputForm" v-bind:options="cssOptions"
+         <editor v-model="css" @init="javascriptEditorInit();" @input="inputForm" v-bind:options="cssOptions"
                  lang="css" theme="chrome"></editor>
         </div>
        </div>
