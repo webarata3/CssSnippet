@@ -12,6 +12,7 @@
   "license": "ISC",
   "productName": "CSSスニペット",
   "dependencies": {
+    "electron": "^3.0.2",
     "vue2-ace-editor": "0.0.11"
   },
   "devDependencies": {}
