@@ -89,7 +89,7 @@ new Vue({
     this.menu = Menu.buildFromTemplate([
       {role: 'copy'},
       {role: 'cut'},
-      {role: 'paste'},
+      {role: 'paste'}
     ]);
   },
   methods: {
