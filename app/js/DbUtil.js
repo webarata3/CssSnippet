@@ -1,16 +1,18 @@
 'use strict';
 
 class DbUtil {
+  static dispErrorMessage(message, event) {
+    return `${message}
+${event.target.error.name}
+${event.target.error.message}`
+  }
+
   static init(callback) {
     return new Promise(function (resolve, reject) {
       const request = window.indexedDB.open('snippet', 1);
-      request.onupgradeneeded = event => {
-        const db = event.target.result;
-        callback(db);
-      };
-      request.onsuccess = event => {
-        resolve(event.target.result);
-      };
+      request.onupgradeneeded = event => callback(event.target.result);
+      request.onsuccess = event => resolve(event.target.result);
+      request.onerror = event => reject(DbUtil.dispErrorMessage('DbUtil.init', event));
     });
   }
 
@@ -20,12 +22,8 @@ class DbUtil {
     return new Promise(function (resolve, reject) {
       const request = objectStore.get(id);
 
-      request.onsuccess = (event) => {
-        resolve(event.target.result);
-      };
-      request.onerror = (event) => {
-        resolve(null);
-      }
+      request.onsuccess = event => resolve(event.target.result);
+      request.onerror = event => resolve(null);
     });
   }
 
@@ -37,7 +35,7 @@ class DbUtil {
     return new Promise(function (resolve, reject) {
       const range = IDBKeyRange.lowerBound(0);
       const cursorRequest = objectStore.openCursor(range);
-      cursorRequest.onsuccess = function (event) {
+      cursorRequest.onsuccess = event => {
         const result = event.target.result;
         if (!result) {
           resolve(resultArray);
@@ -46,9 +44,7 @@ class DbUtil {
         resultArray.push(result.value);
         result.continue();
       };
-      cursorRequest.onerror = error => {
-        resolve(resultArray);
-      };
+      cursorRequest.onerror = event => resolve(resultArray);
     });
   }
 
@@ -59,12 +55,11 @@ class DbUtil {
     return new Promise(function (resolve, reject) {
       const request = objectStore.put(data);
 
-      request.onsuccess = function () {
-      };
+      request.onsuccess = event => {};
+      tx.oncomplete = event => resolve();
 
-      tx.oncomplete = function () {
-        resolve();
-      };
+      request.onerror = event => reject(DbUtil.dispErrorMessage('DbUtil.put', event));
+      tx.onerror = event => reject(DbUtil.dispErrorMessage('DbUtil.put', event));
     });
   }
 
@@ -73,10 +68,8 @@ class DbUtil {
 
     return new Promise(function (resolve, reject) {
       const request = objectStore.delete(key);
-
-      request.onsuccess = function (event) {
-        resolve();
-      };
+      request.onsuccess = event => resolve();
+      request.onerror = event =>  reject(DbUtil.dispErrorMessage('DbUtil.deleteOne', event));
     });
   }
 }

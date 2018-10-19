@@ -2,6 +2,10 @@
 
 const NEW_SNIPPET = '新規スニペット';
 
+function handleError(error) {
+  alert(error);
+}
+
 const SnippetItem = {
   template: `<li v-bind:id="snippet.id"
                  v-bind:class="{ active: snippet.selected }"
@@ -76,7 +80,7 @@ new Vue({
     this.db = await DbUtil.init(db => {
       db.createObjectStore('next_id', {keyPath: 'id'});
       db.createObjectStore('snippet', {keyPath: 'id'});
-    });
+    }).catch(handleError);
 
     const list = await DbUtil.readAll(this.db, 'snippet');
     list.forEach(value => {
